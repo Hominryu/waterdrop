@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointer
 
 type View = 'home' | 'play' | 'history';
 type Droplet = { id: number; x: number; y: number; r: number; tone: number };
-type IconName = 'drop' | 'home' | 'history' | 'gear' | 'back' | 'check' | 'sparkle';
+type IconName = 'drop' | 'home' | 'history' | 'gear' | 'back' | 'check' | 'sparkle' | 'calendar' | 'gift';
 
 function Icon({ name, size = 22 }: { name: IconName; size?: number }) {
   const common = { width: size, height: size, viewBox: '0 0 24 24', fill: 'none', 'aria-hidden': true } as const;
@@ -12,313 +12,67 @@ function Icon({ name, size = 22 }: { name: IconName; size?: number }) {
   if (name === 'gear') return <svg {...common}><path d="M9.8 3.7h4.4l.6 2.1 1.7 1 2.1-.5 2.2 3.8-1.5 1.6v2l1.5 1.6-2.2 3.8-2.1-.5-1.7 1-.6 2.1H9.8l-.6-2.1-1.7-1-2.1.5-2.2-3.8 1.5-1.6v-2l-1.5-1.6 2.2-3.8 2.1.5 1.7-1 .6-2.1Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/><circle cx="12" cy="12" r="2.6" stroke="currentColor" strokeWidth="1.5"/></svg>;
   if (name === 'back') return <svg {...common}><path d="m14.5 5-7 7 7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>;
   if (name === 'check') return <svg {...common}><path d="m5 12.5 4.2 4.2L19.5 6.5" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round"/></svg>;
+  if (name === 'calendar') return <svg {...common}><path d="M6.5 3.8v2.4M17.5 3.8v2.4M4.2 9.2h15.6M5.5 5.5h13a1.3 1.3 0 0 1 1.3 1.3v11.3a1.3 1.3 0 0 1-1.3 1.3h-13a1.3 1.3 0 0 1-1.3-1.3V6.8a1.3 1.3 0 0 1 1.3-1.3Z" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/></svg>;
+  if (name === 'gift') return <svg {...common}><path d="M4 10h16v10H4V10Zm-1-4h18v4H3V6Zm9 0v14M12 6H8.8a2.4 2.4 0 1 1 2.1-3.55L12 6Zm0 0h3.2a2.4 2.4 0 1 0-2.1-3.55L12 6Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round"/></svg>;
   return <svg {...common}><path d="m12 2 1.4 5.2L18 4.8l-2.4 4.6L21 11l-5.4 1.4L18 17l-4.6-2.4L12 20l-1.4-5.4L6 17l2.4-4.6L3 11l5.4-1.6L6 4.8l4.6 2.4L12 2Z" fill="currentColor"/></svg>;
 }
 
 const ROUND_DROPS: Record<number, Droplet[]> = {
-  1: [
-    { id: 1, x: 20, y: 24, r: 27, tone: 0 }, { id: 2, x: 48, y: 19, r: 21, tone: 1 },
-    { id: 3, x: 75, y: 27, r: 25, tone: 2 }, { id: 4, x: 30, y: 58, r: 23, tone: 1 },
-    { id: 5, x: 62, y: 55, r: 30, tone: 0 }, { id: 6, x: 80, y: 71, r: 18, tone: 2 },
-  ],
-  2: [
-    { id: 11, x: 18, y: 26, r: 20, tone: 1 }, { id: 12, x: 44, y: 18, r: 29, tone: 0 },
-    { id: 13, x: 77, y: 25, r: 18, tone: 2 }, { id: 14, x: 26, y: 67, r: 31, tone: 0 },
-    { id: 15, x: 58, y: 55, r: 22, tone: 1 }, { id: 16, x: 81, y: 69, r: 27, tone: 2 },
-    { id: 17, x: 49, y: 82, r: 17, tone: 1 },
-  ],
-  3: [
-    { id: 21, x: 15, y: 22, r: 18, tone: 2 }, { id: 22, x: 38, y: 17, r: 22, tone: 1 },
-    { id: 23, x: 67, y: 20, r: 28, tone: 0 }, { id: 24, x: 84, y: 43, r: 20, tone: 2 },
-    { id: 25, x: 23, y: 53, r: 29, tone: 0 }, { id: 26, x: 51, y: 52, r: 18, tone: 1 },
-    { id: 27, x: 72, y: 69, r: 24, tone: 1 }, { id: 28, x: 37, y: 81, r: 20, tone: 2 },
-  ],
+  1: [{ id:1,x:20,y:24,r:27,tone:0 },{ id:2,x:48,y:19,r:21,tone:1 },{ id:3,x:75,y:27,r:25,tone:2 },{ id:4,x:30,y:58,r:23,tone:1 },{ id:5,x:62,y:55,r:30,tone:0 },{ id:6,x:80,y:71,r:18,tone:2 }],
+  2: [{ id:11,x:18,y:26,r:20,tone:1 },{ id:12,x:44,y:18,r:29,tone:0 },{ id:13,x:77,y:25,r:18,tone:2 },{ id:14,x:26,y:67,r:31,tone:0 },{ id:15,x:58,y:55,r:22,tone:1 },{ id:16,x:81,y:69,r:27,tone:2 },{ id:17,x:49,y:82,r:17,tone:1 }],
+  3: [{ id:21,x:15,y:22,r:18,tone:2 },{ id:22,x:38,y:17,r:22,tone:1 },{ id:23,x:67,y:20,r:28,tone:0 },{ id:24,x:84,y:43,r:20,tone:2 },{ id:25,x:23,y:53,r:29,tone:0 },{ id:26,x:51,y:52,r:18,tone:1 },{ id:27,x:72,y:69,r:24,tone:1 },{ id:28,x:37,y:81,r:20,tone:2 }],
 };
 
-function freshRound(round: number) {
-  return ROUND_DROPS[round].map((drop) => ({ ...drop }));
+function freshRound(round: number) { return ROUND_DROPS[round].map((drop) => ({ ...drop })); }
+
+function AdSlot({ compact = false }: { compact?: boolean }) {
+  return <section className={`ad-slot ${compact ? 'compact' : ''}`} aria-label="광고 영역 미리보기"><span className="ad-badge">AD</span><div><strong>추천 콘텐츠가 들어갈 자리예요</strong><p>실제 광고 SDK 연결 전 레이아웃만 확보했어요</p></div></section>;
 }
 
-function Home({ onStart, onHistory, onSettings, completedRounds, points }: {
-  onStart: () => void;
-  onHistory: () => void;
-  onSettings: () => void;
-  completedRounds: number;
-  points: number;
-}) {
-  return (
-    <div className="screen home-screen">
-      <header className="topbar">
-        <div className="topbar-copy">
-          <span>이번 달 받은 토스포인트</span>
-          <strong>{points}<small>원</small></strong>
-        </div>
-        <button className="icon-button" onClick={onSettings} aria-label="설정"><Icon name="gear" /></button>
-      </header>
-
-      <section className="brand-row">
-        <div className="brand-mark"><Icon name="drop" size={24} /></div>
-        <div><h1>물방울모으기</h1><p>흩어진 물방울을 하나로 모아보세요</p></div>
-      </section>
-
-      <section className="hero-card">
-        <div className="hero-topline">
-          <div><span className="eyebrow">오늘의 물방울</span><h2>{completedRounds >= 3 ? '오늘도 깔끔하게 완료!' : '세 번만 모으면 끝나요'}</h2></div>
-          <div className="round-count"><strong>{Math.min(completedRounds, 3)}</strong><span>/ 3</span></div>
-        </div>
-
-        <div className="water-scene" aria-hidden="true">
-          <div className="surface-glow" />
-          <div className="hero-drop hero-drop-main"><i /></div>
-          <div className="hero-drop hero-drop-a"><i /></div>
-          <div className="hero-drop hero-drop-b"><i /></div>
-          <div className="hero-drop hero-drop-c"><i /></div>
-          <div className="hero-ripple ripple-one" />
-          <div className="hero-ripple ripple-two" />
-        </div>
-
-        <div className="progress-dots" aria-label={`오늘 ${completedRounds}회 완료`}>
-          {[1, 2, 3].map((index) => (
-            <div key={index} className={`progress-step ${completedRounds >= index ? 'done' : completedRounds + 1 === index ? 'current' : ''}`}>
-              <span>{completedRounds >= index ? <Icon name="check" size={16} /> : index}</span>
-              <small>{index}번째</small>
-            </div>
-          ))}
-        </div>
-
-        <button className="primary-button" onClick={onStart}>
-          <span>{completedRounds >= 3 ? '물방울 다시 모아보기' : '물방울 모으기'}</span>
-          <span className="button-arrow">›</span>
-        </button>
-        <p className="hero-help">손가락으로 물방울을 밀어 서로 닿게 해보세요</p>
-      </section>
-
-      <section className="benefit-grid">
-        <article className="benefit-card">
-          <span className="mini-icon blue"><Icon name="sparkle" size={18} /></span>
-          <div><strong>오늘 3번 완료</strong><p>10원 혜택을 받을 수 있어요</p></div>
-        </article>
-        <article className="benefit-card">
-          <span className="mini-icon aqua"><Icon name="drop" size={18} /></span>
-          <div><strong>한 판은 짧고 가볍게</strong><p>잠깐씩 손맛만 즐기면 돼요</p></div>
-        </article>
-      </section>
-
-      <section className="flow-card">
-        <div className="section-heading"><div><span className="eyebrow">오늘의 흐름</span><h3>딱 세 번이면 완료</h3></div><button onClick={onHistory}>기록 보기</button></div>
-        <div className="flow-list">
-          {[1, 2, 3].map((index) => (
-            <div className="flow-row" key={index}>
-              <span className={`flow-index ${completedRounds >= index ? 'done' : ''}`}>{completedRounds >= index ? <Icon name="check" size={15}/> : index}</span>
-              <div><strong>{index}번째 물방울</strong><p>{index === 1 ? '가볍게 손 풀기' : index === 2 ? '조금 더 흩어진 물방울' : '마지막 한 번만 모으면 완료'}</p></div>
-              <span className="flow-state">{completedRounds >= index ? '완료' : completedRounds + 1 === index ? '지금' : '대기'}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-    </div>
-  );
+function Home({ onStart, onHistory, onSettings, onAttendance, completedRounds, points, attendanceChecked, streak }: { onStart:()=>void; onHistory:()=>void; onSettings:()=>void; onAttendance:()=>void; completedRounds:number; points:number; attendanceChecked:boolean; streak:number }) {
+  const missionDone = completedRounds >= 3;
+  return <div className="screen home-screen">
+    <header className="topbar"><div className="topbar-copy"><span>이번 달 받은 토스포인트</span><strong>{points}<small>원</small></strong></div><button className="icon-button" onClick={onSettings} aria-label="설정"><Icon name="gear" /></button></header>
+    <section className="brand-row"><div className="brand-mark"><Icon name="drop" size={24}/></div><div><h1>물방울모으기</h1><p>흩어진 물방울을 하나로 모아보세요</p></div></section>
+    <section className="hero-card hero-card-v2">
+      <div className="hero-ambient ambient-one"/><div className="hero-ambient ambient-two"/>
+      <div className="hero-topline"><div><span className="eyebrow">오늘의 물방울</span><h2>{completedRounds >= 3 ? '오늘도 한 방울로 완성!' : '세 번 모으면 10원 준비 완료'}</h2></div><div className="round-count"><strong>{Math.min(completedRounds,3)}</strong><span>/ 3</span></div></div>
+      <div className="water-scene water-scene-v2" aria-hidden="true"><div className="water-shimmer shimmer-one"/><div className="water-shimmer shimmer-two"/><div className="surface-glow"/><div className="hero-drop hero-drop-main"><i/></div><div className="hero-drop hero-drop-a"><i/></div><div className="hero-drop hero-drop-b"><i/></div><div className="hero-drop hero-drop-c"><i/></div><div className="hero-drop hero-drop-d"><i/></div><div className="hero-ripple ripple-one"/><div className="hero-ripple ripple-two"/><div className="hero-ripple ripple-three"/></div>
+      <div className="drop-progress" aria-label={`오늘 ${completedRounds}회 완료`}>{[1,2,3].map((index)=><div key={index} className={`drop-progress-item ${completedRounds>=index?'done':completedRounds+1===index?'current':''}`}><span><Icon name="drop" size={index===3?22:18}/></span><small>{index}번째</small></div>)}</div>
+      <button className="primary-button hero-cta" onClick={onStart}><span>{completedRounds>=3?'한 번 더 모아보기':'물방울 모으기'}</span><span className="button-arrow">›</span></button><p className="hero-help">물방울을 밀어 서로 닿게 하면 하나로 합쳐져요</p>
+    </section>
+    <section className="daily-hub">
+      <div className="section-heading"><div><span className="eyebrow">오늘 할 일</span><h3>가볍게 챙겨가세요</h3></div><button onClick={onHistory}>기록 보기</button></div>
+      <button className={`attendance-card ${attendanceChecked?'done':''}`} onClick={onAttendance} disabled={attendanceChecked}><span className="daily-icon calendar"><Icon name={attendanceChecked?'check':'calendar'} size={21}/></span><div><strong>{attendanceChecked?'오늘 출석 완료':'출석체크'}</strong><p>{attendanceChecked?`${streak}일 연속으로 들렀어요`:'오늘 한 번 눌러 출석을 남겨요'}</p></div><span className="attendance-action">{attendanceChecked?'완료':'+ 출석'}</span></button>
+      <div className="mission-card"><div className="mission-head"><span className="daily-icon drop"><Icon name="drop" size={21}/></span><div><strong>오늘의 물방울</strong><p>3번 모으면 10원 받기 준비 완료</p></div><b>{Math.min(completedRounds,3)}/3</b></div><div className="mission-track"><i style={{ width:`${Math.min(100,completedRounds/3*100)}%` }}/></div><div className="mission-steps">{[1,2,3].map((step)=><span key={step} className={completedRounds>=step?'done':completedRounds+1===step?'current':''}>{completedRounds>=step?<Icon name="check" size={13}/>:step}</span>)}</div></div>
+      <div className={`reward-card ${missionDone?'ready':''}`}><span className="daily-icon gift"><Icon name="gift" size={21}/></span><div><strong>{missionDone?'10원 받을 준비가 됐어요':'오늘 보상'}</strong><p>{missionDone?'최종 리워드 광고 연결 예정':`${3-Math.min(completedRounds,3)}번만 더 모으면 돼요`}</p></div><span className="reward-amount">10원</span></div>
+    </section>
+    <AdSlot/>
+    <section className="flow-card compact-flow"><div className="section-heading"><div><span className="eyebrow">오늘의 흐름</span><h3>딱 세 번이면 완료</h3></div></div><div className="flow-list">{[1,2,3].map((index)=><div className="flow-row" key={index}><span className={`flow-index ${completedRounds>=index?'done':''}`}>{completedRounds>=index?<Icon name="check" size={15}/>:index}</span><div><strong>{index}번째 물방울</strong><p>{index===1?'가볍게 손 풀기':index===2?'조금 더 흩어진 물방울':'마지막 한 번만 모으면 완료'}</p></div><span className="flow-state">{completedRounds>=index?'완료':completedRounds+1===index?'지금':'대기'}</span></div>)}</div></section>
+  </div>;
 }
 
-function Play({ round, onBack, onRoundComplete }: { round: number; onBack: () => void; onRoundComplete: () => void }) {
-  const [drops, setDrops] = useState(() => freshRound(round));
-  const [complete, setComplete] = useState(false);
-  const boardRef = useRef<HTMLDivElement | null>(null);
-  const dragRef = useRef<{ id: number; pointerId: number } | null>(null);
-
-  useEffect(() => {
-    setDrops(freshRound(round));
-    setComplete(false);
-    dragRef.current = null;
-  }, [round]);
-
-  const mergeIfNeeded = (draggedId: number) => {
-    setDrops((current) => {
-      const dragged = current.find((item) => item.id === draggedId);
-      if (!dragged) return current;
-      let target: Droplet | undefined;
-      let best = Number.POSITIVE_INFINITY;
-      for (const candidate of current) {
-        if (candidate.id === draggedId) continue;
-        const distance = Math.hypot(candidate.x - dragged.x, candidate.y - dragged.y);
-        const threshold = Math.max(9, (candidate.r + dragged.r) * 0.82);
-        if (distance < threshold && distance < best) {
-          target = candidate;
-          best = distance;
-        }
-      }
-      if (!target) return current;
-      const mergedRadius = Math.min(66, Math.sqrt(dragged.r ** 2 + target.r ** 2) * 1.02);
-      const next: Droplet = {
-        id: Math.max(dragged.id, target.id) + 100,
-        x: (dragged.x * dragged.r + target.x * target.r) / (dragged.r + target.r),
-        y: (dragged.y * dragged.r + target.y * target.r) / (dragged.r + target.r),
-        r: mergedRadius,
-        tone: (dragged.tone + target.tone + 1) % 3,
-      };
-      const result = current.filter((item) => item.id !== dragged.id && item.id !== target.id).concat(next);
-      if (result.length === 1) window.setTimeout(() => setComplete(true), 220);
-      return result;
-    });
-  };
-
-  const moveDrop = (event: ReactPointerEvent<HTMLButtonElement>, id: number) => {
-    if (!dragRef.current || dragRef.current.id !== id || dragRef.current.pointerId !== event.pointerId || !boardRef.current) return;
-    const rect = boardRef.current.getBoundingClientRect();
-    const x = Math.max(8, Math.min(92, ((event.clientX - rect.left) / rect.width) * 100));
-    const y = Math.max(8, Math.min(92, ((event.clientY - rect.top) / rect.height) * 100));
-    setDrops((current) => current.map((item) => item.id === id ? { ...item, x, y } : item));
-  };
-
-  const endDrag = (event: ReactPointerEvent<HTMLButtonElement>, id: number) => {
-    if (dragRef.current?.pointerId !== event.pointerId) return;
-    dragRef.current = null;
-    mergeIfNeeded(id);
-  };
-
-  return (
-    <div className="screen play-screen">
-      <header className="play-topbar">
-        <button className="icon-button back-button" onClick={onBack} aria-label="뒤로"><Icon name="back" /></button>
-        <div className="play-progress"><span>오늘 {round}번째</span><strong>{round}<small>/3</small></strong></div>
-        <div className="topbar-spacer" />
-      </header>
-
-      <section className="play-copy">
-        <span className="eyebrow">물방울 {drops.length}개 남았어요</span>
-        <h1>{drops.length > 1 ? '서로 가까이 밀어보세요' : '마지막 물방울 완성!'}</h1>
-        <p>물방울끼리 닿으면 자연스럽게 하나로 합쳐져요</p>
-      </section>
-
-      <section className={`drop-board ${complete ? 'is-complete' : ''}`} ref={boardRef}>
-        <div className="board-light board-light-one" />
-        <div className="board-light board-light-two" />
-        <div className="board-grid" />
-        {drops.map((drop) => (
-          <button
-            type="button"
-            className={`interactive-drop tone-${drop.tone}`}
-            key={drop.id}
-            style={{ left: `${drop.x}%`, top: `${drop.y}%`, width: drop.r * 2, height: drop.r * 2 }}
-            aria-label="물방울 이동"
-            onPointerDown={(event) => {
-              dragRef.current = { id: drop.id, pointerId: event.pointerId };
-              event.currentTarget.setPointerCapture(event.pointerId);
-            }}
-            onPointerMove={(event) => moveDrop(event, drop.id)}
-            onPointerUp={(event) => endDrag(event, drop.id)}
-            onPointerCancel={(event) => endDrag(event, drop.id)}
-          >
-            <i className="drop-shine" />
-            <i className="drop-reflect" />
-          </button>
-        ))}
-        <div className="board-caption"><span className="finger-dot" /> 손가락으로 천천히 밀어보세요</div>
-      </section>
-
-      <div className="play-tip"><Icon name="sparkle" size={18}/><span>팁</span><p>큰 물방울부터 작은 물방울 쪽으로 밀면 더 쉽게 모여요.</p></div>
-
-      {complete && (
-        <div className="completion-overlay" role="dialog" aria-modal="true" aria-label="라운드 완료">
-          <div className="completion-card">
-            <div className="completion-drop"><Icon name="drop" size={38}/><span /></div>
-            <span className="eyebrow">{round}번째 완료</span>
-            <h2>{round < 3 ? '깔끔하게 하나로 모였어요' : '오늘 물방울을 모두 모았어요'}</h2>
-            <p>{round < 3 ? `이제 ${round + 1}번째 물방울로 넘어가요.` : '마지막 혜택 화면까지 자연스럽게 이어질 예정이에요.'}</p>
-            <button className="primary-button" onClick={onRoundComplete}>{round < 3 ? '다음 물방울' : '10원 받기'}</button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+function Play({ round, onBack, onRoundComplete }: { round:number; onBack:()=>void; onRoundComplete:()=>void }) {
+  const [drops,setDrops]=useState(()=>freshRound(round)); const [complete,setComplete]=useState(false); const boardRef=useRef<HTMLDivElement|null>(null); const dragRef=useRef<{id:number;pointerId:number}|null>(null);
+  useEffect(()=>{setDrops(freshRound(round));setComplete(false);dragRef.current=null;},[round]);
+  const mergeIfNeeded=(draggedId:number)=>setDrops((current)=>{const dragged=current.find((item)=>item.id===draggedId); if(!dragged)return current; let target:Droplet|undefined; let best=Number.POSITIVE_INFINITY; for(const candidate of current){if(candidate.id===draggedId)continue; const distance=Math.hypot(candidate.x-dragged.x,candidate.y-dragged.y); const threshold=Math.max(9,(candidate.r+dragged.r)*.82); if(distance<threshold&&distance<best){target=candidate;best=distance;}} if(!target)return current; const next:Droplet={id:Math.max(dragged.id,target.id)+100,x:(dragged.x*dragged.r+target.x*target.r)/(dragged.r+target.r),y:(dragged.y*dragged.r+target.y*target.r)/(dragged.r+target.r),r:Math.min(66,Math.sqrt(dragged.r**2+target.r**2)*1.02),tone:(dragged.tone+target.tone+1)%3}; const result=current.filter((item)=>item.id!==dragged.id&&item.id!==target!.id).concat(next); if(result.length===1)window.setTimeout(()=>setComplete(true),220); return result;});
+  const moveDrop=(event:ReactPointerEvent<HTMLButtonElement>,id:number)=>{if(!dragRef.current||dragRef.current.id!==id||dragRef.current.pointerId!==event.pointerId||!boardRef.current)return; const rect=boardRef.current.getBoundingClientRect(); const x=Math.max(8,Math.min(92,((event.clientX-rect.left)/rect.width)*100)); const y=Math.max(8,Math.min(92,((event.clientY-rect.top)/rect.height)*100)); setDrops((current)=>current.map((item)=>item.id===id?{...item,x,y}:item));};
+  const endDrag=(event:ReactPointerEvent<HTMLButtonElement>,id:number)=>{if(dragRef.current?.pointerId!==event.pointerId)return; dragRef.current=null; mergeIfNeeded(id);};
+  return <div className="screen play-screen"><header className="play-topbar"><button className="icon-button back-button" onClick={onBack} aria-label="뒤로"><Icon name="back"/></button><div className="play-progress"><span>오늘 {round}번째</span><strong>{round}<small>/3</small></strong></div><div className="topbar-spacer"/></header><section className="play-copy"><span className="eyebrow">물방울 {drops.length}개 남았어요</span><h1>{drops.length>1?'서로 가까이 밀어보세요':'마지막 물방울 완성!'}</h1><p>물방울끼리 닿으면 자연스럽게 하나로 합쳐져요</p></section><section className={`drop-board ${complete?'is-complete':''}`} ref={boardRef}><div className="board-light board-light-one"/><div className="board-light board-light-two"/><div className="board-grid"/>{drops.map((drop)=><button type="button" className={`interactive-drop tone-${drop.tone}`} key={drop.id} style={{left:`${drop.x}%`,top:`${drop.y}%`,width:drop.r*2,height:drop.r*2}} aria-label="물방울 이동" onPointerDown={(event)=>{dragRef.current={id:drop.id,pointerId:event.pointerId};event.currentTarget.setPointerCapture(event.pointerId);}} onPointerMove={(event)=>moveDrop(event,drop.id)} onPointerUp={(event)=>endDrag(event,drop.id)} onPointerCancel={(event)=>endDrag(event,drop.id)}><i className="drop-shine"/><i className="drop-reflect"/></button>)}<div className="board-caption"><span className="finger-dot"/> 손가락으로 천천히 밀어보세요</div></section><div className="play-tip"><Icon name="sparkle" size={18}/><span>팁</span><p>큰 물방울부터 작은 물방울 쪽으로 밀면 더 쉽게 모여요.</p></div>{complete&&<div className="completion-overlay" role="dialog" aria-modal="true" aria-label="라운드 완료"><div className="completion-card"><div className="completion-drop"><Icon name="drop" size={38}/><span/></div><span className="eyebrow">{round}번째 완료</span><h2>{round<3?'깔끔하게 하나로 모였어요':'오늘 물방울을 모두 모았어요'}</h2><p>{round<3?`이제 ${round+1}번째 물방울로 넘어가요.`:'10원 받기 단계로 이어져요.'}</p>{round<3?<div className="ad-transition-preview"><span>AD</span><div><strong>전면 광고 연결 구간</strong><small>라운드 종료 뒤에만 노출 예정</small></div></div>:<div className="rewarded-transition-preview"><Icon name="gift" size={19}/><div><strong>리워드 광고 연결 구간</strong><small>10원 받기 버튼에서만 연결 예정</small></div></div>}<button className="primary-button" onClick={onRoundComplete}>{round<3?'다음 물방울':'10원 받기'}</button></div></div>}</div>;
 }
 
-function History({ completedRounds, points }: { completedRounds: number; points: number }) {
-  const days = useMemo(() => ['월', '화', '수', '목', '금', '토', '오늘'], []);
-  return (
-    <div className="screen history-screen">
-      <header className="page-header"><div><span className="eyebrow">나의 기록</span><h1>물방울 기록</h1></div></header>
-      <section className="summary-card">
-        <div><span>이번 달 받은 포인트</span><strong>{points}<small>원</small></strong></div>
-        <div className="summary-divider" />
-        <div><span>오늘 완료</span><strong>{Math.min(completedRounds, 3)}<small>/3회</small></strong></div>
-      </section>
-      <section className="history-card">
-        <div className="section-heading"><div><span className="eyebrow">최근 7일</span><h3>꾸준히 모아봤어요</h3></div></div>
-        <div className="week-strip">
-          {days.map((day, index) => {
-            const done = index < 4 || (index === 6 && completedRounds >= 3);
-            return <div className="day-cell" key={day}><span className={done ? 'done' : ''}>{done ? <Icon name="drop" size={15}/> : '·'}</span><small>{day}</small></div>;
-          })}
-        </div>
-        <div className="history-note"><Icon name="sparkle" size={19}/><div><strong>가볍게, 짧게</strong><p>매일 긴 시간을 쓰지 않아도 세 번만 완료하면 오늘 기록이 채워져요.</p></div></div>
-      </section>
-      <section className="guide-card">
-        <span className="eyebrow">이용 방법</span><h3>물방울은 이렇게 모아요</h3>
-        <div className="guide-steps">
-          <div><span>1</span><p><strong>밀기</strong>물방울을 손가락으로 움직여요</p></div>
-          <div><span>2</span><p><strong>합치기</strong>서로 닿으면 하나로 합쳐져요</p></div>
-          <div><span>3</span><p><strong>완료</strong>큰 물방울 하나가 되면 끝나요</p></div>
-        </div>
-      </section>
-    </div>
-  );
+function History({ completedRounds, points, attendanceChecked, streak }: { completedRounds:number; points:number; attendanceChecked:boolean; streak:number }) {
+  const days=useMemo(()=>['월','화','수','목','금','토','오늘'],[]);
+  return <div className="screen history-screen"><header className="page-header"><div><span className="eyebrow">나의 기록</span><h1>물방울 기록</h1></div></header><section className="summary-card"><div><span>이번 달 받은 포인트</span><strong>{points}<small>원</small></strong></div><div className="summary-divider"/><div><span>오늘 완료</span><strong>{Math.min(completedRounds,3)}<small>/3회</small></strong></div></section><section className="history-card"><div className="section-heading"><div><span className="eyebrow">최근 7일</span><h3>{streak}일 연속 들렀어요</h3></div></div><div className="week-strip">{days.map((day,index)=>{const done=index<4||(index===6&&attendanceChecked);return <div className="day-cell" key={day}><span className={done?'done':''}>{done?<Icon name="drop" size={15}/>:'·'}</span><small>{day}</small></div>;})}</div><div className="history-note"><Icon name="sparkle" size={19}/><div><strong>가볍게, 짧게</strong><p>출석과 물방울 세 번만 챙겨도 오늘 기록이 채워져요.</p></div></div></section><AdSlot compact/><section className="guide-card"><span className="eyebrow">이용 방법</span><h3>물방울은 이렇게 모아요</h3><div className="guide-steps"><div><span>1</span><p><strong>밀기</strong>물방울을 손가락으로 움직여요</p></div><div><span>2</span><p><strong>합치기</strong>서로 닿으면 하나로 합쳐져요</p></div><div><span>3</span><p><strong>완료</strong>큰 물방울 하나가 되면 끝나요</p></div></div></section></div>;
 }
 
-function SettingsSheet({ sound, vibration, onSound, onVibration, onClose }: {
-  sound: boolean; vibration: boolean; onSound: () => void; onVibration: () => void; onClose: () => void;
-}) {
-  return <div className="sheet-backdrop" onMouseDown={onClose} role="presentation"><section className="settings-sheet" onMouseDown={(event) => event.stopPropagation()} role="dialog" aria-modal="true" aria-label="설정">
-    <div className="sheet-handle" />
-    <div className="sheet-title"><div><span className="eyebrow">설정</span><h2>편하게 즐겨보세요</h2></div><button className="sheet-close" onClick={onClose}>닫기</button></div>
-    <button className="setting-row" onClick={onSound}><div><strong>효과음</strong><p>물방울이 합쳐지는 소리를 들려줘요</p></div><span className={`switch ${sound ? 'on' : ''}`}><i /></span></button>
-    <button className="setting-row" onClick={onVibration}><div><strong>진동</strong><p>합쳐질 때 가벼운 손맛을 더해요</p></div><span className={`switch ${vibration ? 'on' : ''}`}><i /></span></button>
-    <div className="sheet-info">광고·포인트·토스 SDK 연결은 2차 작업에서 붙일 수 있도록 화면 구조만 먼저 잡았어요.</div>
-  </section></div>;
-}
-
-function BottomNav({ view, onChange }: { view: View; onChange: (view: View) => void }) {
-  if (view === 'play') return null;
-  return <nav className="bottom-nav" aria-label="하단 메뉴">
-    <button className={view === 'home' ? 'active' : ''} onClick={() => onChange('home')}><Icon name="home"/><span>홈</span></button>
-    <button className={view === 'history' ? 'active' : ''} onClick={() => onChange('history')}><Icon name="history"/><span>기록</span></button>
-  </nav>;
-}
+function SettingsSheet({ sound,vibration,onSound,onVibration,onClose }: { sound:boolean; vibration:boolean; onSound:()=>void; onVibration:()=>void; onClose:()=>void }) { return <div className="sheet-backdrop" onMouseDown={onClose} role="presentation"><section className="settings-sheet" onMouseDown={(event)=>event.stopPropagation()} role="dialog" aria-modal="true" aria-label="설정"><div className="sheet-handle"/><div className="sheet-title"><div><span className="eyebrow">설정</span><h2>편하게 즐겨보세요</h2></div><button className="sheet-close" onClick={onClose}>닫기</button></div><button className="setting-row" onClick={onSound}><div><strong>효과음</strong><p>물방울이 합쳐지는 소리를 들려줘요</p></div><span className={`switch ${sound?'on':''}`}><i/></span></button><button className="setting-row" onClick={onVibration}><div><strong>진동</strong><p>합쳐질 때 가벼운 손맛을 더해요</p></div><span className={`switch ${vibration?'on':''}`}><i/></span></button><div className="sheet-info">광고·포인트·토스 SDK는 실제 연동 전이며, 현재는 자리와 흐름만 미리 잡아둔 상태예요.</div></section></div>; }
+function BottomNav({ view,onChange }: { view:View; onChange:(view:View)=>void }) { if(view==='play')return null; return <nav className="bottom-nav" aria-label="하단 메뉴"><button className={view==='home'?'active':''} onClick={()=>onChange('home')}><Icon name="home"/><span>홈</span></button><button className={view==='history'?'active':''} onClick={()=>onChange('history')}><Icon name="history"/><span>기록</span></button></nav>; }
 
 export default function App() {
-  const [view, setView] = useState<View>('home');
-  const [round, setRound] = useState(1);
-  const [completedRounds, setCompletedRounds] = useState(0);
-  const [points, setPoints] = useState(0);
-  const [settings, setSettings] = useState(false);
-  const [sound, setSound] = useState(true);
-  const [vibration, setVibration] = useState(true);
-
-  const start = () => {
-    const nextRound = completedRounds >= 3 ? 1 : Math.max(1, completedRounds + 1);
-    if (completedRounds >= 3) setCompletedRounds(0);
-    setRound(nextRound);
-    setView('play');
-  };
-
-  const finishRound = () => {
-    if (round < 3) {
-      setCompletedRounds(round);
-      setRound(round + 1);
-      return;
-    }
-    setCompletedRounds(3);
-    setPoints((current) => current + 10);
-    setView('home');
-  };
-
-  return <div className="app-shell">
-    <main className="app-content">
-      {view === 'home' && <Home onStart={start} onHistory={() => setView('history')} onSettings={() => setSettings(true)} completedRounds={completedRounds} points={points}/>} 
-      {view === 'play' && <Play round={round} onBack={() => setView('home')} onRoundComplete={finishRound}/>} 
-      {view === 'history' && <History completedRounds={completedRounds} points={points}/>} 
-    </main>
-    <BottomNav view={view} onChange={setView}/>
-    {settings && <SettingsSheet sound={sound} vibration={vibration} onSound={() => setSound((value) => !value)} onVibration={() => setVibration((value) => !value)} onClose={() => setSettings(false)}/>} 
-  </div>;
+  const [view,setView]=useState<View>('home'); const [round,setRound]=useState(1); const [completedRounds,setCompletedRounds]=useState(0); const [points,setPoints]=useState(0); const [settings,setSettings]=useState(false); const [sound,setSound]=useState(true); const [vibration,setVibration]=useState(true); const [attendanceChecked,setAttendanceChecked]=useState(false); const [streak,setStreak]=useState(4);
+  const start=()=>{const nextRound=completedRounds>=3?1:Math.max(1,completedRounds+1); if(completedRounds>=3)setCompletedRounds(0); setRound(nextRound); setView('play');};
+  const finishRound=()=>{if(round<3){setCompletedRounds(round);setRound(round+1);return;} setCompletedRounds(3);setPoints((current)=>current+10);setView('home');};
+  const checkAttendance=()=>{if(attendanceChecked)return;setAttendanceChecked(true);setStreak((current)=>current+1);};
+  return <div className="app-shell"><main className="app-content">{view==='home'&&<Home onStart={start} onHistory={()=>setView('history')} onSettings={()=>setSettings(true)} onAttendance={checkAttendance} completedRounds={completedRounds} points={points} attendanceChecked={attendanceChecked} streak={streak}/>} {view==='play'&&<Play round={round} onBack={()=>setView('home')} onRoundComplete={finishRound}/>} {view==='history'&&<History completedRounds={completedRounds} points={points} attendanceChecked={attendanceChecked} streak={streak}/>}</main><BottomNav view={view} onChange={setView}/>{settings&&<SettingsSheet sound={sound} vibration={vibration} onSound={()=>setSound((value)=>!value)} onVibration={()=>setVibration((value)=>!value)} onClose={()=>setSettings(false)}/>}</div>;
 }
