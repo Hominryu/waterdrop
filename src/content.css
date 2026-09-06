@@ -85,8 +85,46 @@
 .surprise-toast small { display:block; margin-top:2px; color:#8b95a1; font-size:9px; }
 @keyframes surpriseToastIn { from { transform:translate(-50%,-8px); opacity:0; } to { transform:translate(-50%,0); opacity:1; } }
 
+/* V5 — denser water surface + subtle living motion */
+.hero-drop-e { width:27px; height:27px; left:8%; top:154px; animation-delay:-1.9s; }
+.hero-drop-f { width:22px; height:22px; right:7%; top:118px; animation-delay:-3.1s; }
+.hero-drop-g { width:15px; height:15px; left:42%; top:58px; animation-delay:-1.1s; }
+.hero-drop-a,.hero-drop-e { animation-duration:3.8s; }
+.hero-drop-b,.hero-drop-f { animation-duration:4.4s; }
+.hero-drop-c,.hero-drop-d,.hero-drop-g { animation-duration:3.2s; }
+
+.interactive-drop { will-change:transform; animation:dropIdleDrift 3.6s ease-in-out infinite; }
+.interactive-drop:nth-of-type(3n+1) { animation-duration:4.1s; animation-delay:-1.2s; }
+.interactive-drop:nth-of-type(3n+2) { animation-duration:3.3s; animation-delay:-2.1s; }
+.interactive-drop:nth-of-type(3n) { animation-duration:4.6s; animation-delay:-.7s; }
+.interactive-drop:active { animation-play-state:paused; }
+.interactive-drop .drop-shine { animation:dropGleam 2.8s ease-in-out infinite; }
+.interactive-drop:nth-of-type(even) .drop-shine { animation-delay:-1.1s; }
+.interactive-drop .drop-reflect { animation:dropReflect 3.5s ease-in-out infinite; }
+.interactive-drop.surprise-drop { animation:dropIdleDrift 3.4s ease-in-out infinite, surprisePulse 1.8s ease-in-out infinite; }
+
+@keyframes dropIdleDrift {
+  0%,100% { transform:translate(-50%,-50%) translate3d(0,0,0) scale(1); border-radius:50% 48% 51% 49% / 48% 51% 49% 52%; }
+  28% { transform:translate(-50%,-50%) translate3d(1.5px,-2px,0) scale(1.018,.986); border-radius:47% 53% 49% 51% / 51% 47% 53% 49%; }
+  62% { transform:translate(-50%,-50%) translate3d(-1px,1.5px,0) scale(.988,1.016); border-radius:52% 48% 53% 47% / 46% 54% 48% 52%; }
+}
+@keyframes dropGleam {
+  0%,100% { transform:translate3d(0,0,0) rotate(-28deg); opacity:.78; }
+  50% { transform:translate3d(3px,2px,0) rotate(-20deg); opacity:1; }
+}
+@keyframes dropReflect {
+  0%,100% { transform:translate3d(0,0,0) rotate(24deg) scale(1); opacity:.42; }
+  50% { transform:translate3d(-2px,-2px,0) rotate(18deg) scale(.88,1.12); opacity:.58; }
+}
+
 @media (max-width:380px) {
   .daily-mission-card,.weekly-card,.tip-card { padding:17px 15px; }
   .weekly-day > span { width:28px; height:28px; }
   .water-tone-pill { top:5px; }
+  .hero-drop-e { left:6%; }
+  .hero-drop-f { right:5%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .interactive-drop,.interactive-drop.surprise-drop,.interactive-drop .drop-shine,.interactive-drop .drop-reflect { animation:none !important; }
 }
