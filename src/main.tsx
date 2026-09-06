@@ -4,6 +4,7 @@ import App from './App';
 import './styles.css';
 import './polish.css';
 import './content.css';
+import './launch-polish.css';
 import './liquidMotion';
 
 createRoot(document.getElementById('root')!).render(
