@@ -27,6 +27,7 @@ export type WaterdropState = {
   rewardStatus: RewardStatus;
   rewardClaimed: boolean;
   pointsToday: number;
+  pointsMonth: number;
   pendingEntitlementId: string | null;
   rewardEnabled: boolean;
   integrationReady: boolean;
